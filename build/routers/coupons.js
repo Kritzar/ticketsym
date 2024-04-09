@@ -17,7 +17,7 @@ const express_1 = __importDefault(require("express"));
 const couponRouter = express_1.default.Router();
 exports.couponRouter = couponRouter;
 const coupons_1 = require("../controller/coupons");
-couponRouter.get("/coupon", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+couponRouter.get("/coupons", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const coupons = yield coupons_1.CouponController.getAllCoupon({
         path: req.path,
     });
@@ -98,7 +98,7 @@ couponRouter.post("/coupon", (req, res) => __awaiter(void 0, void 0, void 0, fun
     });
     res.json(coupons);
 }));
-couponRouter.delete("/coupons/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+couponRouter.delete("/coupon/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     if (id == undefined || id == null || id == "") {
         const response = {
@@ -118,30 +118,15 @@ couponRouter.delete("/coupons/:id", (req, res) => __awaiter(void 0, void 0, void
         };
         return res.status(400).json(response);
     }
-    res.send(`delete coupons by ${id}`);
+    const coupons = yield coupons_1.CouponController.deleteCouponById({
+        id: Number(id),
+        path: req.path,
+    });
+    res.json(coupons);
 }));
 couponRouter.delete("/coupons", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("5th command");
-}));
-couponRouter.put("/coupons/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.id;
-    if (id == undefined || id == null || id == "") {
-        const response = {
-            status: false,
-            message: "id is required",
-            data: null,
-            path: req.path,
-        };
-        return res.status(400).json(response);
-    }
-    if (isNaN(Number(id))) {
-        const response = {
-            status: false,
-            message: "id must be a number",
-            data: null,
-            path: req.path,
-        };
-        return res.status(400).json(response);
-    }
-    res.json({ message: `update coupons by ${id}` });
+    const coupons = yield coupons_1.CouponController.deleteAllCoupon({
+        path: req.path,
+    });
+    res.json(coupons);
 }));

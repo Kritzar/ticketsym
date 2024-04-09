@@ -3,7 +3,7 @@ const couponRouter = express.Router();
 import { ResponseType } from "../model/response";
 import { CouponController } from "../controller/coupons";
 
-couponRouter.get("/coupon", async (req: Request, res: Response) => {
+couponRouter.get("/coupons", async (req: Request, res: Response) => {
   const coupons: ResponseType = await CouponController.getAllCoupon({
     path: req.path,
   });
@@ -97,7 +97,7 @@ couponRouter.post("/coupon", async (req: Request, res: Response) => {
   res.json(coupons);
 });
 
-couponRouter.delete("/coupons/:id", async (req: Request, res: Response) => {
+couponRouter.delete("/coupon/:id", async (req: Request, res: Response) => {
   const id = req.params.id;
 
   if (id == undefined || id == null || id == "") {
@@ -119,35 +119,21 @@ couponRouter.delete("/coupons/:id", async (req: Request, res: Response) => {
     };
     return res.status(400).json(response);
   }
-  res.send(`delete coupons by ${id}`);
+
+  const coupons: ResponseType = await CouponController.deleteCouponById({
+    id: Number(id),
+    path: req.path,
+  });
+
+  res.json(coupons);
 });
 
 couponRouter.delete("/coupons", async (req: Request, res: Response) => {
-  res.send("5th command");
+  const coupons: ResponseType = await CouponController.deleteAllCoupon({
+    path: req.path,
+  });
+
+  res.json(coupons);
 });
 
-couponRouter.put("/coupons/:id", async (req: Request, res: Response) => {
-  const id = req.params.id;
-
-  if (id == undefined || id == null || id == "") {
-    const response = {
-      status: false,
-      message: "id is required",
-      data: null,
-      path: req.path,
-    };
-    return res.status(400).json(response);
-  }
-
-  if (isNaN(Number(id))) {
-    const response = {
-      status: false,
-      message: "id must be a number",
-      data: null,
-      path: req.path,
-    };
-    return res.status(400).json(response);
-  }
-  res.json({ message: `update coupons by ${id}` });
-});
 export { couponRouter };

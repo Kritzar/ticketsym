@@ -16,6 +16,20 @@ class Coupon {
     createCoupon(args) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const iscouponalreadyexist = yield __1.prisma.coupon.findFirst({
+                    where: {
+                        code: args.code,
+                    },
+                });
+                if (iscouponalreadyexist) {
+                    const response = {
+                        status: false,
+                        message: "coupon already exist",
+                        data: null,
+                        path: args.path,
+                    };
+                    return response;
+                }
                 const coupons = yield __1.prisma.coupon.create({
                     data: {
                         name: args.name,
@@ -87,7 +101,7 @@ class Coupon {
     getCouponById(args) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const coupon = __1.prisma.coupon.findUnique({
+                const coupon = yield __1.prisma.coupon.findUnique({
                     where: {
                         id: args.id,
                     },
@@ -104,6 +118,94 @@ class Coupon {
                 const response = {
                     status: true,
                     message: "coupon",
+                    data: coupon,
+                    path: args.path,
+                };
+                return response;
+            }
+            catch (e) {
+                const response = {
+                    status: false,
+                    message: (0, mothod_1.errorToString)(e),
+                    data: null,
+                    path: args.path,
+                };
+                return response;
+            }
+        });
+    }
+    deleteAllCoupon(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const deleteAllCoupon = yield __1.prisma.coupon.deleteMany({
+                    where: {
+                        id: {
+                            gt: 0,
+                        },
+                    },
+                });
+                if (!deleteAllCoupon) {
+                    const response = {
+                        status: false,
+                        message: "failed to delete coupons",
+                        data: null,
+                        path: args.path,
+                    };
+                    return response;
+                }
+                const response = {
+                    status: true,
+                    message: "Coupons deleted",
+                    data: null,
+                    path: args.path,
+                };
+                return response;
+            }
+            catch (e) {
+                const response = {
+                    status: false,
+                    message: (0, mothod_1.errorToString)(e),
+                    data: null,
+                    path: args.path,
+                };
+                return response;
+            }
+        });
+    }
+    deleteCouponById(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const coupon = yield __1.prisma.coupon.findUnique({
+                    where: {
+                        id: args.id,
+                    },
+                });
+                if (!coupon) {
+                    const response = {
+                        status: false,
+                        message: "coupon not found",
+                        data: null,
+                        path: args.path,
+                    };
+                    return response;
+                }
+                const deleteCoupon = yield __1.prisma.coupon.delete({
+                    where: {
+                        id: args.id,
+                    },
+                });
+                if (!deleteCoupon) {
+                    const response = {
+                        status: false,
+                        message: "Unable to delete coupon",
+                        data: coupon,
+                        path: args.path,
+                    };
+                    return response;
+                }
+                const response = {
+                    status: true,
+                    message: "coupon deleted",
                     data: coupon,
                     path: args.path,
                 };
